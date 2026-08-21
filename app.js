@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const mongoose = require('mongoose'); // استدعاء mongoose لمعرفة حالة الاتصال
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
 const errorHandler = require('./middleware/errorHandler');
@@ -31,16 +32,7 @@ app.get('/', (req, res) => {
   res.send('EventPulse API is running...');
 });
 
-// Mount Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/registrations', registrationRoutes);
-app.use('/api/announcements', announcementRoutes);
-
-// 404 Handler
-app.use((req, res, next) => {
-  res.status(404).json({ status: 'fail', message: 'Route not found' });
-});
+// Health Check Route (يتحط قبل الـ 404 Handler)
 app.get('/health', (req, res) => {
   const dbState = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   res.status(200).json({
@@ -50,8 +42,19 @@ app.get('/health', (req, res) => {
     database: dbState
   });
 });
+
+// Mount Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/registrations', registrationRoutes);
+app.use('/api/announcements', announcementRoutes);
+
+// 404 Handler (بيتحط بعد كل الـ Routes)
+app.use((req, res, next) => {
+  res.status(404).json({ status: 'fail', message: 'Route not found' });
+});
+
 // Central Error Handler
 app.use(errorHandler);
 
-// تصدير app ليستقبله server.js
 module.exports = app;
