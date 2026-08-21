@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const mongoSanitize = require('express-mongo-sanitize');
-const connectDB = require('./config/db');
+const connectDB = require('./config/db'); // أو مسار ملف db.js عندك
 
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
@@ -14,7 +14,13 @@ const announcementRoutes = require('./routes/announcements.routes');
 
 const app = express();
 
-// Express 5 Query Property Fix (توضع في البداية)
+// Middleware ضمان الاتصال بالداتابيز قبل معالجة أي روت في Serverless
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
+
+// Middleware Fix for Express 5 & mongoSanitize
 app.use((req, res, next) => {
   Object.defineProperty(req, 'query', {
     value: { ...req.query },
@@ -29,24 +35,14 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(mongoSanitize());
 
-// Middleware لضمان انتهاء الاتصال بالداتابيز قبل معالجة أي طلب في Serverless
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    console.error('Database connection failed in middleware:', error);
-    next(error); // التمرير للـ Central Error Handler
-  }
-});
-
 // Base Route
 app.get('/', (req, res) => {
   res.send('EventPulse API is running...');
 });
 
 // Health Check Route
-app.get('/health', (req, res) => {
+app.get('/health', async (req, res) => {
+  await connectDB();
   const dbState = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
   res.status(200).json({
     status: 'ok',

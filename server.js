@@ -4,6 +4,9 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const app = require('./app');
 
+// 1. Connect Database
+connectDB();
+
 // 2. Create HTTP Server Wrapper
 const server = http.createServer(app);
 
@@ -32,13 +35,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// 1 & 6. Connect Database Then Start Server
+// 6. Start Server Listener
 const PORT = process.env.PORT || 3000;
-
-connectDB().then(() => {
-  server.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  });
-}).catch((err) => {
-  console.error('Failed to start server due to DB connection:', err);
+server.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
 });

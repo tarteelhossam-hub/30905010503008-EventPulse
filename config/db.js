@@ -1,33 +1,23 @@
 const mongoose = require('mongoose');
 
-let cachedPromise = null;
+let isConnected = false;
 
 const connectDB = async () => {
-  // 1. إذا كان الاتصال قائماً بالفعل، ارجع الموديل مباشرة
-  if (mongoose.connection.readyState === 1) {
-    return mongoose.connection;
-  }
+  if (isConnected && mongoose.connection.readyState === 1) return;
 
-  // 2. إذا لم يكن هناك Promise جاري تنفيذه، أنشئ اتصالاً جديداً
-  if (!cachedPromise) {
-    const mongoUri = process.env.MONGO_URI;
+  const mongoUri = process.env.MONGO_URI;
 
-    if (!mongoUri) {
-      throw new Error('MONGO_URI is missing from environment variables');
-    }
-
-    cachedPromise = mongoose.connect(mongoUri, {
-      bufferCommands: false,
-    });
+  if (!mongoUri) {
+    console.error('CRITICAL ERROR: MONGO_URI is undefined in process.env!');
+    return;
   }
 
   try {
-    await cachedPromise;
-    console.log('MongoDB connected successfully');
-    return mongoose.connection;
+    const db = await mongoose.connect(mongoUri);
+    isConnected = db.connections[0].readyState === 1;
+    console.log('MongoDB Connected successfully');
   } catch (error) {
-    cachedPromise = null; // إعادة تعيين الـ Promise في حال الفشل لإتاحة المحاولة لاحقاً
-    throw error; // إلقاء الخطأ ليتعامل معه Express Middleware
+    console.error('MongoDB connection error:', error);
   }
 };
 
