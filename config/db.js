@@ -1,12 +1,23 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 const connectDB = async () => {
+  if (isConnected && mongoose.connection.readyState === 1) return;
+
+  const mongoUri = process.env.MONGO_URI;
+
+  if (!mongoUri) {
+    console.error('CRITICAL ERROR: MONGO_URI is undefined in process.env!');
+    return;
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    const db = await mongoose.connect(mongoUri);
+    isConnected = db.connections[0].readyState === 1;
+    console.log('MongoDB Connected successfully');
   } catch (error) {
-    console.error(`Database Connection Error: ${error.message}`);
-    process.exit(1); // إيقاف التشغيل فوراً عند failure
+    console.error('MongoDB connection error:', error);
   }
 };
 
