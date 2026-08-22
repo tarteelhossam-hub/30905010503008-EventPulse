@@ -16,7 +16,6 @@ const registrationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// منع التسجيل المزدوج على مستوى قاعدة البيانات
 registrationSchema.index({ event: 1, attendee: 1 }, { unique: true });
 
 module.exports = mongoose.model('Registration', registrationSchema);
