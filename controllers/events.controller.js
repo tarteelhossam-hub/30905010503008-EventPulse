@@ -1,11 +1,9 @@
 const Event = require('../models/event.model');
 
-// 1. Get All Events (Filtering, Pagination, Sorting, Search)
 exports.getEvents = async (req, res, next) => {
   try {
     const { category, city, startDate, endDate, page, limit, sortBy, order, search } = req.query;
 
-    // --- A. Filtering ---
     const filter = {};
 
     if (category) filter.category = category;
@@ -17,7 +15,6 @@ exports.getEvents = async (req, res, next) => {
       if (endDate) filter.date.$lte = new Date(endDate);
     }
 
-    // --- B. Text Search ($regex) ---
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
@@ -25,18 +22,16 @@ exports.getEvents = async (req, res, next) => {
       ];
     }
 
-    // --- C. Pagination ---
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 10;
     const skip = (pageNum - 1) * limitNum;
 
-    // --- D. Sorting ---
+
     const allowedSortFields = ['date', 'registrations'];
     const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'date';
     const sortDirection = order === 'desc' ? -1 : 1;
     const sort = { [sortField]: sortDirection };
 
-    // Execute Queries concurrently
     const [data, total] = await Promise.all([
       Event.find(filter)
         .populate('category')
@@ -61,7 +56,6 @@ exports.getEvents = async (req, res, next) => {
   }
 };
 
-// 2. Get Single Event by ID
 exports.getEventById = async (req, res, next) => {
   try {
     const event = await Event.findById(req.params.id)
@@ -84,7 +78,6 @@ exports.getEventById = async (req, res, next) => {
   }
 };
 
-// 3. Create Event (Admin)
 exports.createEvent = async (req, res, next) => {
   try {
     const newEvent = await Event.create(req.body);
@@ -98,7 +91,6 @@ exports.createEvent = async (req, res, next) => {
   }
 };
 
-// 4. Update Event (Admin)
 exports.updateEvent = async (req, res, next) => {
   try {
     const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, {
@@ -122,7 +114,6 @@ exports.updateEvent = async (req, res, next) => {
   }
 };
 
-// 5. Delete Event (Admin)
 exports.deleteEvent = async (req, res, next) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);

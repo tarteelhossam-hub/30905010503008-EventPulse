@@ -2,7 +2,6 @@ const errorHandler = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  // Mongoose Bad ObjectId (CastError) -> 400
   if (err.name === 'CastError') {
     return res.status(400).json({
       status: 'fail',
@@ -10,7 +9,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Mongoose Validation Error -> 400
   if (err.name === 'ValidationError') {
     const messages = Object.values(err.errors).map(val => val.message);
     return res.status(400).json({
@@ -19,7 +17,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Mongoose Duplicate Key Error -> 409
   if (err.code === 11000) {
     return res.status(409).json({
       status: 'fail',
@@ -27,7 +24,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Custom AppError
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -35,7 +31,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Unhandled Internal Error -> 500
+
   console.error('ERROR :', err);
   return res.status(500).json({
     status: 'error',

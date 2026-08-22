@@ -4,8 +4,9 @@ const Event = require('../models/event.model');
 // 1. Register for an Event (POST /api/registrations)
 exports.registerForEvent = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const eventId = req.body.event;
+    // Fallback logic to support token payload variability or body input
+    const userId = req.user?.id || req.user?._id || req.body.attendee || req.body.attendeeId;
+    const eventId = req.body.event || req.body.eventId;
 
     // Check 1: Event existence
     const event = await Event.findById(eventId);
@@ -43,7 +44,7 @@ exports.registerForEvent = async (req, res, next) => {
 // 2. Get My Registrations (GET /api/registrations/my)
 exports.getMyRegistrations = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?._id;
 
     const registrations = await Registration.find({ attendee: userId }).populate('event');
 
@@ -56,7 +57,7 @@ exports.getMyRegistrations = async (req, res, next) => {
 // 3. Cancel Registration (DELETE /api/registrations/:id)
 exports.cancelRegistration = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user?.id || req.user?._id;
     const registrationId = req.params.id;
 
     // Check existence
@@ -66,7 +67,7 @@ exports.cancelRegistration = async (req, res, next) => {
     }
 
     // Check ownership
-    if (registration.attendee.toString() !== userId) {
+    if (registration.attendee.toString() !== userId?.toString()) {
       return res.status(403).json({ message: "You can only cancel your own registration" });
     }
 

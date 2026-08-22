@@ -4,13 +4,11 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const app = require('./app');
 
-// 1. Connect Database
 connectDB();
 
-// 2. Create HTTP Server Wrapper
 const server = http.createServer(app);
 
-// 3. Initialize Socket.io
+
 const io = new Server(server, {
   cors: {
     origin: '*',
@@ -18,10 +16,8 @@ const io = new Server(server, {
   }
 });
 
-// 4. Attach io instance to Express App
 app.set('io', io);
 
-// 5. Socket.io Connection & Event Rooms
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
@@ -35,7 +31,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// 6. Start Server Listener
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);

@@ -2,18 +2,18 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../../../app');
 
-// استدعاء الموديلات لضمان تسجيل الـ Schemas في Mongoose قبل التشغيل
-require('../../../models/category.model'); // استدعي موديل الكاتجوري هنا
-// require('../../../models/Event'); // لو الموديل موجود في مجلد models
+require('../../../models/category.model');
 
 describe('Events API Integration Tests', () => {
   beforeAll(async () => {
     const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/test_db';
-    await mongoose.connect(mongoUri);
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(mongoUri);
+    }
   });
 
   afterAll(async () => {
-    await mongoose.connection.close();
+    await mongoose.disconnect();
   });
 
   test('GET /api/events - returns 200 OK and array of events', async () => {

@@ -13,7 +13,6 @@ const seedData = async () => {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('Database connected for seeding...');
 
-    // 1. مسح البيانات بترتيب آمن لمنع تعارض الـ References
     await Message.deleteMany();
     await Registration.deleteMany();
     await Event.deleteMany();
@@ -21,7 +20,6 @@ const seedData = async () => {
     await User.deleteMany();
     console.log('Old data cleared successfully.');
 
-    // 2. إنشاء المستخدمين (Admin + Attendee) مع تشفير الكلمة السرية
     const hashedPassword = await bcrypt.hash('AdminPass123!', 10);
     const adminUser = await User.create({
       name: 'System Admin',
@@ -38,15 +36,13 @@ const seedData = async () => {
     });
     console.log('Users created.');
 
-    // 3. إنشاء Categories (على الأقل 3)
     const categories = await Category.insertMany([
-      { name: 'Technology', description: 'Tech conferences, hackathons, and workshops' },
+      { name: 'Technology', description: 'Tech conferences, hackathons, and workshops'},
       { name: 'Music', description: 'Live concerts and music festivals' },
       { name: 'Sports', description: 'Tournaments and fitness events' }
     ]);
     console.log('Categories created.');
 
-    // 4. إنشاء Events (على الأقل 4)
     const events = await Event.insertMany([
       {
         title: 'AI & Web Dev Summit 2026',
@@ -91,11 +87,16 @@ const seedData = async () => {
     ]);
     console.log('Events created.');
 
-    // 5. إنشاء نموذج تسجيل واختباري
+  
     await Registration.create({
       event: events[0]._id,
       attendee: attendeeUser._id
     });
+
+    console.log('-----------------------------------');
+    console.log('Event ID:', events[0]._id);
+    console.log('Attendee ID:', attendeeUser._id);
+    console.log('-----------------------------------');
 
     console.log('Seed completed successfully! Database ready.');
     process.exit(0);

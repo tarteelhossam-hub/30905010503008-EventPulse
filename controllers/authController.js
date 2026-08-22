@@ -4,6 +4,9 @@ const User = require('../models/user.model');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'eventpulse_super_secret_jwt_key_2026';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+
 exports.register = asyncHandler(async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -18,13 +21,13 @@ exports.register = asyncHandler(async (req, res, next) => {
     name,
     email,
     password: hashedPassword,
-    role: 'attendee', // القيمة الافتراضية
+    role: 'attendee',
   });
 
   const token = jwt.sign(
     { userId: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN }
   );
 
   res.status(201).json({
@@ -51,8 +54,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 
   const token = jwt.sign(
     { userId: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN }
   );
 
   res.status(200).json({
