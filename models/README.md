@@ -7,6 +7,10 @@
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-brightgreen?style=for-the-badge&logo=swagger)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?style=for-the-badge&logo=vercel)
 
+### GitHub Repository Link:https://github.com/tarteelhossam-hub/30905010503008-EventPulse
+### Deployed API Link (Vercel):https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app
+### Health Check Status:https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app/health
+
 **EventPulse** is a robust, production-grade Backend RESTful API & Real-Time Server for an Event Management Platform. Built with **Node.js**, **Express.js**, **MongoDB**, and **Socket.io**, it features authentication & authorization, event management with advanced query features, dynamic capacity handling, real-time announcements, comprehensive validation, central error handling, automated testing, and interactive API documentation.
 
 ---
@@ -59,3 +63,44 @@
 git clone [https://github.com/](https://github.com/)<YOUR_GITHUB_USERNAME>/<StudentID>-EventPulse.git
 cd <StudentID>-EventPulse
 ```
+## 2. Install Dependencies
+```
+npm install
+```
+## 3. Environment Configuration
+- Create a .env file in the root directory and add the following environment variables (refer to .env.example):
+```
+PORT=3000
+NODE_ENV=development
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/eventpulse?retryWrites=true&w=majority
+JWT_SECRET=your_super_secret_jwt_key_here
+```
+## 4. Seed the Database
+- Populate your database with default categories (Music, Tech, Sports), sample events, and an Admin user:
+```
+npm run seed
+```
+## 5. Run the Application
+- Development Mode:
+```
+npm run dev
+```
+- Production Mode:
+```
+npm start
+```
+## 6. Run Automated Tests
+```
+npm test
+```
+# Versioning & Release
+- This project follows strict Git Workflow standards:
+
+Conventional Commits: feat:, fix:, docs:, test:, refactor:.
+
+Release Tag: v1.0.0
+```
+git tag -a v1.0.0 -m "Release v1.0.0 - Complete EventPulse API"
+git push origin v1.0.0
+```
+## Developed with ❤️ as part of Level 4 Semester 2 Final Project.
