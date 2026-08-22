@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
-const app = require('../../../app');
+const app = require('../../app');
 
-require('../../../models/category.model');
+require('../../models/category.model');
 
 describe('Events API Integration Tests', () => {
   beforeAll(async () => {
