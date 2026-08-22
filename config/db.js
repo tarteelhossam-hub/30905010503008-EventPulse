@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+console.log("Current MONGO_URI from env:", process.env.MONGO_URI ? "EXISTS" : "UNDEFINED");
 let isConnected = false;
 
 const connectDB = async () => {
