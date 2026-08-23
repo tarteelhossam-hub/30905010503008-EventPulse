@@ -7,9 +7,9 @@
 ![Swagger](https://img.shields.io/badge/Swagger-OpenAPI%203.0-brightgreen?style=for-the-badge&logo=swagger)
 ![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?style=for-the-badge&logo=vercel)
 
-### GitHub Repository Link:https://github.com/tarteelhossam-hub/30905010503008-EventPulse
-### Deployed API Link (Vercel):https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app
-### Health Check Status:https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app/health
+#### GitHub Repository Link: https://github.com/tarteelhossam-hub/30905010503008-EventPulse
+#### Deployed API Link (Vercel): https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app
+#### Health Check Status: https://30905010503008-event-pulse-git-main-tarteel-hossam.vercel.app/health
 
 **EventPulse** is a robust, production-grade Backend RESTful API & Real-Time Server for an Event Management Platform. Built with **Node.js**, **Express.js**, **MongoDB**, and **Socket.io**, it features authentication & authorization, event management with advanced query features, dynamic capacity handling, real-time announcements, comprehensive validation, central error handling, automated testing, and interactive API documentation.
 
@@ -103,4 +103,22 @@ Release Tag: v1.0.0
 git tag -a v1.0.0 -m "Release v1.0.0 - Complete EventPulse API"
 git push origin v1.0.0
 ```
+## Troubleshooting
+
+### Database Connection Error (`ETIMEOUT` / `queryTxt`)
+
+If you encounter the following error when starting the application or connecting to MongoDB Atlas:
+
+```
+code: 'ETIMEOUT',
+syscall: 'queryTxt',
+hostname: 'eventpulse.d6uapir.mongodb.net'
+```
+Cause: This indicates a DNS resolution issue or restriction with your current internet network while querying SRV records.
+
+**Solution:**
+
+- Switch your network connection (e.g., connect via a mobile Hotspot).
+
+- Retry running the application (npm start).
 ## Developed with ❤️ as part of Level 4 Semester 2 Final Project.
